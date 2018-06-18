@@ -1,0 +1,23 @@
+{
+    "name": "f15d/taboola",
+    "description": "F15D Taboola Api for laravel 5",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Jorge Carlos",
+            "email": "skay_1994@yahoo.com.br"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "helper/function.php"
+        ],
+        "psr-4": {
+            "F15DTaboola\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "^6.3@dev"
+    }
+}
