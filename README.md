@@ -1,17 +1,18 @@
-###F15D Taboola API
+### F15D Taboola API
+
 Um pacote para fazer requisições para o **Backstage** do [Taboola](https://www.taboola.com).
 Pacote criado para uso com o framework Laravel.
 
 O pacote está em desenvolvimento, no momento so faz do tipo **report**, o restante será adicionado em novas versões
 
-####Requisitos
+#### Requisitos
 
 1. PHP 7+
 2. Laravel 5+
 3. Taboola client_id e client_secret
 4. Taboola account_name
 
-####Configuração
+#### Configuração
 
 Adicione as variaveis ao `.env`
 
@@ -42,7 +43,7 @@ Registre o provider e os alias no ``config/app.php``
 ],
 ````
 
-####Uso
+#### Uso
 
 Escolha o tipo de report, a lista completa você pode ver nesse [link](https://github.com/taboola/Backstage-API/blob/master/Backstage%20API%20-%20Reports.pdf)
 
