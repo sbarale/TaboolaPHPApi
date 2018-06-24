@@ -19,13 +19,13 @@ class BaseReports extends Base
         parent::__construct('reports');
     }
 
-    public function setStartDate(string $date)
+    public function setStartDate($date)
     {
         $this->mandatoryFilters['start_date'] = $date;
         return $this;
     }
 
-    public function setEndDate(string $date)
+    public function setEndDate($date)
     {
         $this->mandatoryFilters['end_date'] = $date;
         return $this;
