@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "files": [
-            "helper/function.php"
+            "src/helper/function.php"
         ],
         "psr-4": {
             "F15DTaboola\\": "src/"
