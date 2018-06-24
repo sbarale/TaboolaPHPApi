@@ -3,8 +3,8 @@ namespace F15DTaboola\Backstage\Contracts;
 
 interface ReportTypesContract
 {
-    public function setStartDate(string $date);
-    public function setEndDate(string $date);
+    public function setStartDate($date);
+    public function setEndDate($date);
     function run($name, $args);
-    function resultTransformer($data, bool $isJson = true);
+    function resultTransformer($data, $isJson);
 }
