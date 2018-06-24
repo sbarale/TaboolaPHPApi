@@ -50,15 +50,15 @@ class Connection
 
     public function getToken()
     {
-        $token = Cache::remember("taboolaUserToke", 60 * 60 , function () {
+        $token = Cache::remember("taboolaUserToke", 30, function () {
             return $this->auth();
         });
 
         return $token;
     }
 
-    private function auth() {
-
+    private function auth()
+    {
         if($this->loginTime) {
             $currentTime = time();
             $timeCount = $this->loginTime - $currentTime;
@@ -73,7 +73,6 @@ class Connection
         } else {
             return $this->taboolaLogin();
         }
-
     }
 
     private function taboolaLogin()
