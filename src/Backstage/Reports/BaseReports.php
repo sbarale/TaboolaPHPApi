@@ -5,64 +5,65 @@ namespace F15DTaboola\Backstage\Reports;
 use F15DTaboola\Backstage\Base;
 use Illuminate\Support\Facades\Log;
 
-class BaseReports extends Base
-{
-    protected $mandatoryFilters = [
-        'start_date' => null,
-        'end_date' => null,
-    ];
+class BaseReports extends Base {
+	protected $mandatoryFilters = [
+		'start_date' => null,
+		'end_date'   => null,
+	];
 
-    protected $dimensions = [];
+	protected $dimensions = [];
 
-    public function __construct()
-    {
-        parent::__construct('reports');
-    }
+	public function __construct() {
+		parent::__construct( 'reports' );
+	}
 
-    public function setStartDate($date)
-    {
-        $this->mandatoryFilters['start_date'] = $date;
-        return $this;
-    }
+	public function setStartDate( $date ) {
+		$this->mandatoryFilters['start_date'] = $date;
 
-    public function setEndDate($date)
-    {
-        $this->mandatoryFilters['end_date'] = $date;
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @param $data
-     * @return array
-     * @throws \Exception
-     */
-    protected function checkMandatoryFilters($data)
-    {
-        if(!$this->mandatoryFilters['start_date']) {
-            throw new \Exception('[F15D Taboola] Mandatory filter "start_date" is required in '.get_class($this));
-        }
+	public function setEndDate( $date ) {
+		$this->mandatoryFilters['end_date'] = $date;
 
-        if(!$this->mandatoryFilters['end_date']) {
-            throw new \Exception('[F15D Taboola] Mandatory filter "end_date" is required in '.get_class($this));
-        }
+		return $this;
+	}
 
-        return array_merge($this->mandatoryFilters, $data);
-    }
+	/**
+	 * @param $data
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	protected function checkMandatoryFilters( $data ) {
+		if ( ! $this->mandatoryFilters['start_date'] ) {
+			throw new \Exception( '[F15D Taboola] Mandatory filter "start_date" is required in ' . get_class( $this ) );
+		}
 
-    /**
-     * @param $name
-     * @param $arguments
-     * @return string
-     * @throws \Exception
-     */
-    public function __call($name, $arguments)
-    {
-        $name = snake_case($name);
+		if ( ! $this->mandatoryFilters['end_date'] ) {
+			throw new \Exception( '[F15D Taboola] Mandatory filter "end_date" is required in ' . get_class( $this ) );
+		}
+		if ( count( $data ) == 1 ) {
+			$data = $data[0];
+		}
 
-        $dimensions = array_keys($this->dimensions);
+		return array_merge( $this->mandatoryFilters, $data );
+	}
 
-        if(in_array($name,$dimensions)) {
-            return $this->run($name,$arguments);
-        }
-    }
+	/**
+	 * @param $name
+	 * @param $arguments
+	 *
+	 * @return string
+	 * @throws \Exception
+	 */
+	public function __call( $name, $arguments ) {
+		$name = snake_case( $name );
+
+		$dimensions = array_keys( $this->dimensions );
+
+		if ( in_array( $name, $dimensions ) ) {
+			return $this->run( $name, $arguments );
+		}
+	}
 }

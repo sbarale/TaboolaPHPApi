@@ -48,7 +48,6 @@ class Reports extends Base
         $args = $argments[1];
 
         $content = $this->http->get($uri,['query' => $args])->getBody()->getContents();
-
         return $this->resultTransformer($content);
     }
 
