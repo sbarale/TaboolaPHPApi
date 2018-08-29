@@ -231,7 +231,7 @@ class VisitValue extends BaseReports implements ReportTypesContract
      * @param bool $isJson
      * @return mixed
      */
-    function resultTransformer($data, $isJson = true)
+    function resultTransformer($data, bool $isJson = true)
     {
         if($isJson) {
             $data = json_decode($data,true);
