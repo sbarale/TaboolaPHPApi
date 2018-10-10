@@ -30,9 +30,9 @@ class Connection {
 
 	public function __construct( $config = [] ) {
 
-		$this->clientId     = ! isset( $config['client_id'] ) ? $config['client_id'] : config( 'taboola.client_id' );
-		$this->clientSecret = ! isset( $config['client_secret'] ) ? $config['client_secret'] : config( 'taboola.client_secret' );
-		$this->accountName  = ! isset( $config['client_secret'] ) ? $config['client_secret'] : config( 'taboola.client_name' );
+		$this->clientId     = isset( $config['client_id'] ) ? $config['client_id'] : config( 'taboola.client_id' );
+		$this->clientSecret = isset( $config['client_secret'] ) ? $config['client_secret'] : config( 'taboola.client_secret' );
+		$this->accountName  = isset( $config['client_secret'] ) ? $config['client_secret'] : config( 'taboola.client_name' );
 
 		$this->taboolaBackstageApi = config( 'taboola.api_version' );
 		$this->tokenType           = config( 'taboola.token_type' );

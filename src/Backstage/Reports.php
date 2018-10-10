@@ -30,7 +30,7 @@ class Reports extends Base {
 	 * Just a helper to use with Facades
 	 */
 	public function with( $config = [] ) {
-		return new static( ``$config );
+		return new static( $config );
 	}
 
 	/**
