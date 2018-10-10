@@ -13,8 +13,15 @@ class BaseReports extends Base {
 
 	protected $dimensions = [];
 
-	public function __construct() {
-		parent::__construct( 'reports' );
+	public function __construct( $config = [] ) {
+		parent::__construct( 'reports', $config );
+	}
+
+	/*
+	 * Just a helper to use with Facades
+	 */
+	public function with( $config = [] ) {
+		return new static( $config );
 	}
 
 	public function setStartDate( $date ) {
