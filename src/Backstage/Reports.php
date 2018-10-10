@@ -11,65 +11,70 @@ use Carbon\Carbon;
  * @method visitValue
  *
  * Class Reports
+ *
  * @package F15DTaboola\Backstage
  */
-class Reports extends Base
-{
-    protected $types = [
-        'campaign-',
-        'top-campaign-content',
-        'revenue-summary',
-        'visit-value'
-    ];
+class Reports extends Base {
+	protected $types = [
+		'campaign-',
+		'top-campaign-content',
+		'revenue-summary',
+		'visit-value',
+	];
 
-    public function __construct()
-    {
-        parent::__construct('reports');
-    }
+	public function __construct( $config = [] ) {
+		parent::__construct( 'reports', $config );
+	}
 
-    /**
-     * @param $type
-     * @param $argments
-     * @return string
-     * @throws \Exception
-     */
-    protected function run($type, $argments)
-    {
-        $uri = $type;
+	/*
+	 * Just a helper to use with Facades
+	 */
+	public function with( $config = [] ) {
+		return new static( ``$config );
+	}
 
-        $dimension = $argments[0];
+	/**
+	 * @param $type
+	 * @param $argments
+	 *
+	 * @return string
+	 * @throws \Exception
+	 */
+	protected function run( $type, $argments ) {
+		$uri = $type;
 
-        $uri .= '/dimensions/'.$dimension;
+		$dimension = $argments[0];
 
-        if(!isset($argments[1])) {
-            throw new \Exception('');
-        }
+		$uri .= '/dimensions/' . $dimension;
 
-        $args = $argments[1];
+		if ( ! isset( $argments[1] ) ) {
+			throw new \Exception( '' );
+		}
 
-        $content = $this->http->get($uri,['query' => $args])->getBody()->getContents();
-        return $this->resultTransformer($content);
-    }
+		$args = $argments[1];
 
-    private function resultTransformer($data, bool $isJson = true)
-    {
-        if($isJson) {
-            $data = json_decode($data,true);
-        }
+		$content = $this->http->get( $uri, [ 'query' => $args ] )->getBody()->getContents();
 
-        $data['results'] = collect($data['results']);
+		return $this->resultTransformer( $content );
+	}
 
-        return $data;
-    }
+	private function resultTransformer( $data, bool $isJson = true ) {
+		if ( $isJson ) {
+			$data = json_decode( $data, true );
+		}
 
-    public function __call($name, $arguments)
-    {
-        $name = kebab_case($name);
+		$data['results'] = collect( $data['results'] );
 
-        $dimensions = $this->types;
+		return $data;
+	}
 
-        if(in_array($name,$dimensions)) {
-            return $this->run($name,$arguments);
-        }
-    }
+	public function __call( $name, $arguments ) {
+		$name = kebab_case( $name );
+
+		$dimensions = $this->types;
+
+		if ( in_array( $name, $dimensions ) ) {
+			return $this->run( $name, $arguments );
+		}
+	}
 }

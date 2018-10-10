@@ -19,8 +19,15 @@ class Campaigns extends Base {
 		'campaigns',
 	];
 
-	public function __construct() {
-		parent::__construct( '' );
+	public function __construct( $config = [] ) {
+		parent::__construct( '', $config );
+	}
+
+	/*
+	 * Just a helper to use with Facades
+	 */
+	public function with( $config = [] ) {
+		return new static( $config );
 	}
 
 	/**

@@ -7,150 +7,147 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class Connection
-{
-    private $taboolaBackstage = 'https://backstage.taboola.com/';
+class Connection {
+	private $taboolaBackstage = 'https://backstage.taboola.com/';
 
-    private $taboolaBackstageApi = '1.0';
+	private $taboolaBackstageApi = '1.0';
 
-    private $taboolaBackstageBaseApiUri = 'backstage/api/';
+	private $taboolaBackstageBaseApiUri = 'backstage/api/';
 
-    private $clientId = '';
+	private $clientId = '';
 
-    private $clientSecret = '';
+	private $clientSecret = '';
 
-    private $accountName = '';
+	private $accountName = '';
 
-    private $loginTime = null;
+	private $loginTime = null;
 
-    private $userToken = null;
+	private $userToken = null;
 
-    private $tokenType = 'Bearer';
+	private $tokenType = 'Bearer';
 
-    private $tokenExpire = 3600;
+	private $tokenExpire = 3600;
 
-    public function __construct()
-    {
-        $this->clientId = config('taboola.client_id');
-        $this->clientSecret = config('taboola.client_secret');
-        $this->accountName = config('taboola.client_name');
+	public function __construct( $config = [] ) {
 
-        $this->taboolaBackstageApi = config('taboola.api_version');
-        $this->tokenType = config('taboola.token_type');
-    }
+		$this->clientId     = ! isset( $config['client_id'] ) ? $config['client_id'] : config( 'taboola.client_id' );
+		$this->clientSecret = ! isset( $config['client_secret'] ) ? $config['client_secret'] : config( 'taboola.client_secret' );
+		$this->accountName  = ! isset( $config['client_secret'] ) ? $config['client_secret'] : config( 'taboola.client_name' );
 
-    public function getCredentials()
-    {
-        return [
-            'CLIENT_ID' => $this->clientId,
-            'CLIENT_SECRET' => $this->clientSecret,
-            'ACCOUNT_NAME' => $this->accountName
-        ];
-    }
+		$this->taboolaBackstageApi = config( 'taboola.api_version' );
+		$this->tokenType           = config( 'taboola.token_type' );
+	}
 
-    public function getToken()
-    {
-        $token = Cache::remember("taboolaUserToke", 30, function () {
-            return $this->auth();
-        });
+	public function getCredentials() {
+		return [
+			'CLIENT_ID'     => $this->clientId,
+			'CLIENT_SECRET' => $this->clientSecret,
+			'ACCOUNT_NAME'  => $this->accountName,
+		];
+	}
 
-        return $token;
-    }
+	public function getToken() {
+		$token = Cache::remember( "taboolaUserToke", 30, function () {
+			return $this->auth();
+		} );
 
-    private function auth()
-    {
-        if($this->loginTime) {
-            $currentTime = time();
-            $timeCount = $this->loginTime - $currentTime;
+		return $token;
+	}
 
-            if($timeCount >= $this->tokenExpire) {
+	private function auth() {
+		if ( $this->loginTime ) {
+			$currentTime = time();
+			$timeCount   = $this->loginTime - $currentTime;
 
-                return $this->taboolaLogin();
+			if ( $timeCount >= $this->tokenExpire ) {
 
-            } else {
-                return $this->userToken;
-            }
-        } else {
-            return $this->taboolaLogin();
-        }
-    }
+				return $this->taboolaLogin();
 
-    private function taboolaLogin()
-    {
-        $http = new Client([
-            'base_uri' => $this->taboolaBackstage,
-        ]);
+			} else {
+				return $this->userToken;
+			}
+		} else {
+			return $this->taboolaLogin();
+		}
+	}
 
-        $auth = $http->post('backstage/oauth/token',['query' => [
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
-            'grant_type' => 'client_credentials'
-        ]]);
+	private function taboolaLogin() {
+		$http = new Client( [
+			'base_uri' => $this->taboolaBackstage,
+		] );
 
-        $body = json_decode($auth->getBody()->getContents());
+		$auth = $http->post( 'backstage/oauth/token', [
+			'query' => [
+				'client_id'     => $this->clientId,
+				'client_secret' => $this->clientSecret,
+				'grant_type'    => 'client_credentials',
+			],
+		] );
 
-        try {
+		$body = json_decode( $auth->getBody()->getContents() );
 
-            $this->userToken = $body->access_token;
-            $this->tokenType = $body->token_type;
-            $this->tokenExpire = $body->expires_in;
+		try {
 
-            $this->loginTime = time();
+			$this->userToken   = $body->access_token;
+			$this->tokenType   = $body->token_type;
+			$this->tokenExpire = $body->expires_in;
 
-            return $this->userToken;
+			$this->loginTime = time();
 
-        } catch (\Exception $e) {
-            Log::error('[F15D Taboola] error'. $e->getMessage());
-        }
-    }
+			return $this->userToken;
 
-    /**
-     * @param string $uri
-     * @return Client
-     * @throws \Exception
-     */
-    public function httpAuthFormateUri($uri = '')
-    {
-        $uri = $this->taboolaBackstage.
-            $this->taboolaBackstageBaseApiUri.
-            $this->taboolaBackstageApi .'/' . $this->accountName .'/' . $uri ;
+		} catch ( \Exception $e ) {
+			Log::error( '[F15D Taboola] error' . $e->getMessage() );
+		}
+	}
 
-        return $this->httpAuthClient($uri);
-    }
+	/**
+	 * @param string $uri
+	 *
+	 * @return Client
+	 * @throws \Exception
+	 */
+	public function httpAuthFormateUri( $uri = '' ) {
+		$uri = $this->taboolaBackstage .
+		       $this->taboolaBackstageBaseApiUri .
+		       $this->taboolaBackstageApi . '/' . $this->accountName . '/' . $uri;
 
-    /**
-     * @param string $uri
-     * @return Client
-     * @throws \Exception
-     */
-    public static function httpAuthFormatedUriS($uri = null)
-    {
-        $self = new self();
+		return $this->httpAuthClient( $uri );
+	}
 
-        if($uri) {
-            $uri = $uri.'/';
-        }
+	/**
+	 * @param null  $uri
+	 * @param array $config
+	 *
+	 * @return Client
+	 * @throws \Exception
+	 */
+	public static function httpAuthFormatedUriS( $uri = null, $config = [] ) {
+		$self = new self( $config );
 
-        $uri = $self->taboolaBackstage.
-            $self->taboolaBackstageBaseApiUri.
-            $self->taboolaBackstageApi .'/' . $self->accountName .'/' . $uri;
+		if ( $uri ) {
+			$uri = $uri . '/';
+		}
 
-        return $self->httpAuthClient($uri);
-    }
+		$uri = $self->taboolaBackstage .
+		       $self->taboolaBackstageBaseApiUri .
+		       $self->taboolaBackstageApi . '/' . $self->accountName . '/' . $uri;
 
-    /**
-     * @return Client
-     * @throws \Exception
-     */
-    private function httpAuthClient($uri = '')
-    {
-        $http = $this->client = new Client([
-            'base_uri' => $uri,
-            'headers'  => [
-                'Authorization' => $this->tokenType.' ' . $this->getToken()
-            ]
-        ]);
+		return $self->httpAuthClient( $uri );
+	}
 
-        return $http;
-    }
+	/**
+	 * @return Client
+	 * @throws \Exception
+	 */
+	private function httpAuthClient( $uri = '' ) {
+		$http = $this->client = new Client( [
+			'base_uri' => $uri,
+			'headers'  => [
+				'Authorization' => $this->tokenType . ' ' . $this->getToken(),
+			],
+		] );
+
+		return $http;
+	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace F15DTaboola\Facades\Reports;
+namespace F15DTaboola\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
