@@ -32,7 +32,7 @@ class Connection {
 
 		$this->clientId     = isset( $config['client_id'] ) ? $config['client_id'] : config( 'taboola.client_id' );
 		$this->clientSecret = isset( $config['client_secret'] ) ? $config['client_secret'] : config( 'taboola.client_secret' );
-		$this->accountName  = isset( $config['client_secret'] ) ? $config['client_secret'] : config( 'taboola.client_name' );
+		$this->accountName  = isset( $config['client_name'] ) ? $config['client_name'] : config( 'taboola.client_name' );
 
 		$this->taboolaBackstageApi = config( 'taboola.api_version' );
 		$this->tokenType           = config( 'taboola.token_type' );
