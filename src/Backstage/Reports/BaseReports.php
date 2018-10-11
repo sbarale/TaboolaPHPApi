@@ -21,7 +21,7 @@ class BaseReports extends Base {
 	 * Just a helper to use with Facades
 	 */
 	public function with( $config = [] ) {
-		return new static( $config );
+        $this->connect($config);
 	}
 
 	public function setStartDate( $date ) {
