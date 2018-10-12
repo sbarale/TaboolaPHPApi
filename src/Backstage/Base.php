@@ -31,7 +31,6 @@ class Base
     public function connect($config)
     {
         $this->http = Connection::httpAuthFormatedUriS($this->type, $config);
-
     }
 
     public function getHttpClient()

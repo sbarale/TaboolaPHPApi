@@ -14,64 +14,71 @@ use Carbon\Carbon;
  *
  * @package F15DTaboola\Backstage
  */
-class Campaigns extends Base {
-	protected $types = [
-		'campaigns',
-	];
+class Campaigns extends Base
+{
+    protected $types = [
+        'campaigns',
+    ];
 
-	public function __construct( $config = [] ) {
-		parent::__construct( '', $config );
-	}
+    public function __construct($config = [])
+    {
+        parent::__construct('', $config);
+    }
 
-	/*
-	 * Just a helper to use with Facades
-	 */
-	public function with( $config = [] ) {
-		return new static( $config );
-	}
+    /*
+     * Just a helper to use with Facades
+     */
+    public function with($config = [])
+    {
+        $this->connect($config);
+        return $this;
+    }
 
-	/**
-	 * @param $type
-	 * @param $argments
-	 *
-	 * @return string
-	 * @throws \Exception
-	 */
-	protected function run( $type, $argments ) {
-		$uri = $type;
+    /**
+     * @param $type
+     * @param $argments
+     *
+     * @return string
+     * @throws \Exception
+     */
+    protected function run($type, $argments)
+    {
+        $uri = $type;
 
-		$dimension = $argments[0];
+        $dimension = $argments[0];
 
-		$uri .= '/' . $dimension;
+        $uri .= '/' . $dimension;
 
-		if ( ! isset( $argments[1] ) ) {
-			throw new \Exception( '' );
-		}
+        if (!isset($argments[1])) {
+            throw new \Exception('');
+        }
 
-		$args = $argments[1];
+        $args = $argments[1];
 
-		$content = $this->http->get( $uri, [ 'query' => $args ] )->getBody()->getContents();
+        $content = $this->http->get($uri, ['query' => $args])->getBody()->getContents();
 
-		return $this->resultTransformer( $content );
-	}
+        return $this->resultTransformer($content);
+    }
 
-	private function resultTransformer( $data, bool $isJson = true ) {
-		if ( $isJson ) {
-			$data = json_decode( $data, true );
-		}
+    private function resultTransformer($data, bool $isJson = true)
+    {
+        if ($isJson) {
+            $data = json_decode($data, true);
+        }
 
-		$data['results'] = collect( $data['results'] );
+        $data['results'] = collect($data['results']);
 
-		return $data;
-	}
+        return $data;
+    }
 
-	public function __call( $name, $arguments ) {
-		$name = kebab_case( $name );
+    public function __call($name, $arguments)
+    {
+        $name = kebab_case($name);
 
-		$dimensions = $this->types;
+        $dimensions = $this->types;
 
-		if ( in_array( $name, $dimensions ) ) {
-			return $this->run( $name, $arguments );
-		}
-	}
+        if (in_array($name, $dimensions)) {
+            return $this->run($name, $arguments);
+        }
+    }
 }
