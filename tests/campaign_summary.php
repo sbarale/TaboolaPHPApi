@@ -8,5 +8,9 @@
 
 include "../vendor/autoload.php";
 
-use F15DTaboola\Backstage\Reports\VisitValue;
+use F15DTaboola\Backstage\Reports\CampaignSummary;
 
+$camps = CampaignSummary::with([])
+                        ->setStartDate(Carbon::now()->toDateString())
+                        ->setEndDate(Carbon::now()->toDateString())
+                        ->campaignBreakdown([]);

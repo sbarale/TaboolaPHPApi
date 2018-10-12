@@ -25,7 +25,7 @@ class Base
     public function __construct(string $type, $config = [])
     {
         $this->type = $type;
-        $this->http = Connection::httpAuthFormatedUriS($type, $config);
+//        $this->http = Connection::httpAuthFormatedUriS($type, $config);
     }
 
     public function connect($config)
